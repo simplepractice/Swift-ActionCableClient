@@ -22,45 +22,33 @@
 
 import Foundation
 
-public typealias ChannelIdentifier = ActionPayload
+public typealias ChannelParameters = ActionPayload
 public typealias OnReceiveClosure = ((Any?, Swift.Error?) -> (Void))
 
 /// A particular channel on the server.
 open class Channel: Hashable, Equatable {
-    
+
     /// Name of the channel
     open var name : String
-    
-    /// Identifier
-    open var identifier: Dictionary<String, Any>?
-    
+
+    /// Parameters
+    open var parameters: ChannelParameters?
+
+    /// Channel identifier shared between the client and the server
+    open var identifier: String
+
     /// Auto-Subscribe to channel on initialization and re-connect?
     open var autoSubscribe : Bool
-    
+
     /// Buffer actions
     /// If not subscribed, buffer actions and flush until after a subscribe
     open var shouldBufferActions : Bool
-    
+
     /// Subscribed
     open var isSubscribed : Bool {
-        return client.subscribed(uid)
+        return client.subscribed(identifier: identifier)
     }
-    
-    /// Unique Identifier
-    open var uid: String {
-        get {
-            //defaults to channel name
-            var channelUID = name
-            
-            //if identifier isn't empty, fetch the first value as the channel unique identifier
-            if let dictionary = identifier?.first {
-                channelUID = dictionary.value as! String
-            }
-            
-            return channelUID
-        }
-    }
-    
+
     /// A block called when a message has been received on this channel.
     ///
     /// ```swift
@@ -74,7 +62,7 @@ open class Channel: Hashable, Equatable {
     ///     - error: An error when decoding of the message failed.
     ///
     open var onReceive: ((Any?, Swift.Error?) -> Void)?
-  
+
     /// A block called when the channel has been successfully subscribed.
     ///
     /// Note: This block will be called if the client disconnects and then
@@ -86,28 +74,42 @@ open class Channel: Hashable, Equatable {
     /// }
     /// ```
     open var onSubscribed: (() -> Void)?
-    
+
     /// A block called when the channel was unsubscribed.
     ///
     /// Note: This block is also called if the server disconnects.
     open var onUnsubscribed: (() -> Void)?
-    
+
     /// A block called when a subscription attempt was rejected
     /// by the server.
     open var onRejected: (() -> Void)?
 
-    internal init(name: String, identifier: ChannelIdentifier?, client: ActionCableClient, autoSubscribe: Bool=true, shouldBufferActions: Bool=true) {
+
+    internal init(name: String, parameters: ChannelParameters?, client: ActionCableClient, autoSubscribe: Bool=true, shouldBufferActions: Bool=true) {
         self.name = name
+        self.parameters = parameters
+        self.identifier = Channel.identifierFor(name: name, parameters: parameters)
+
         self.client = client
         self.autoSubscribe = autoSubscribe
         self.shouldBufferActions = shouldBufferActions
-        self.identifier = identifier
     }
-    
+
+    public static func identifierFor(name: String, parameters: ChannelParameters?) -> String {
+        var identifierDict = parameters ?? [:]
+        identifierDict["channel"] = name
+
+        // If something is wrong with the parameters, the developer will be warn with a runtime exception.
+        let JSONData = try! JSONSerialization.data(withJSONObject: identifierDict, options: JSONSerialization.WritingOptions(rawValue: 0))
+        return NSString(data: JSONData, encoding: String.Encoding.utf8.rawValue)! as String
+    }
+
+
     open func onReceive(_ action:String, handler: @escaping (OnReceiveClosure)) -> Void {
         onReceiveActionHooks[action] = handler
     }
-    
+
+
     /// Subscript for `action:`.
     ///
     /// Send an action to the server.
@@ -122,16 +124,16 @@ open class Channel: Hashable, Equatable {
     /// - Parameters:
     ///     - action: The name of the action (e.g. speak)
     /// - Returns: `true` if the action was sent.
-  
+
     open subscript(name: String) -> (Dictionary<String, Any>) -> Swift.Error? {
-        
+
         func executeParams(_ params : Dictionary<String, Any>?) -> Swift.Error?  {
             return action(name, with: params)
         }
-        
+
         return executeParams
     }
-    
+
     /// Send an action.
     ///
     /// Note: ActionCable does not give any confirmation or response that an
@@ -155,19 +157,19 @@ open class Channel: Hashable, Equatable {
         // Consume the error and return false if the error is a not subscribed
         // error and we are buffering the actions.
         } catch TransmitError.notSubscribed where self.shouldBufferActions {
-            
+
             ActionCableSerialQueue.async(execute: {
                 self.actionBuffer.append(Action(name: name, params: params))
             })
-            
+
             return TransmitError.notSubscribed
         } catch {
             return error
         }
-        
+
         return nil
     }
-    
+
     /// Subscribe to the channel on the server.
     ///
     /// This should be unnecessary if autoSubscribe is `true`.
@@ -178,7 +180,7 @@ open class Channel: Hashable, Equatable {
     open func subscribe() {
         client.subscribe(self)
     }
-    
+
     /// Unsubscribe from the channel on the server.
     ///
     /// Upon unsubscribing, ActionCableClient will stop retaining this object.
@@ -189,15 +191,23 @@ open class Channel: Hashable, Equatable {
     open func unsubscribe() {
         client.unsubscribe(self)
     }
-    
+
     internal var onReceiveActionHooks: Dictionary<String, OnReceiveClosure> = Dictionary()
     internal unowned var client: ActionCableClient
     internal var actionBuffer: Array<Action> = Array()
-    open let hashValue: Int = Int(arc4random_uniform(UInt32(Int32.max)))
+    public var hashValue: Int {
+        get {
+            return Int(arc4random_uniform(UInt32(Int32.max)))
+        }
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(hashValue)
+    }
 }
 
 public func ==(lhs: Channel, rhs: Channel) -> Bool {
-  return (lhs.hashValue == rhs.hashValue) && (lhs.uid == rhs.uid)
+  return (lhs.hashValue == rhs.hashValue) && (lhs.identifier == rhs.identifier)
 }
 
 extension Channel {
@@ -207,7 +217,7 @@ extension Channel {
                 if let callback = self.onReceive {
                     DispatchQueue.main.async(execute: { callback(message.data, message.error) })
                 }
-                
+
                 if let actionName = message.actionName, let callback = self.onReceiveActionHooks[actionName] {
                     DispatchQueue.main.async(execute: { callback(message.data, message.error) })
                 }
@@ -215,7 +225,7 @@ extension Channel {
                 if let callback = self.onSubscribed {
                     DispatchQueue.main.async(execute: callback)
                 }
-                
+
                 self.flushBuffer()
             case .rejectSubscription:
                 if let callback = self.onRejected {
@@ -230,14 +240,14 @@ extension Channel {
             default: break
         }
     }
-    
+
     internal func flushBuffer() {
-        ActionCableSerialQueue.sync(execute: {() -> Void in
-            // Bail out if the parent is gone for whatever reason
-            while let action = self.actionBuffer.popLast() {
+        // Bail out if the parent is gone for whatever reason
+        while let action = self.actionBuffer.popLast() {
+            ActionCableSerialQueue.async(execute: {() -> Void in
                 self.action(action.name, with: action.params)
-            }
-        })
+            })
+        }
     }
 }
 
@@ -246,7 +256,7 @@ extension Channel {
         assert(false, "This class doesn't implement NSCopying. ")
         return nil
     }
-    
+
     func copy() -> AnyObject! {
         assert(false, "This class doesn't implement NSCopying")
         return nil
@@ -259,12 +269,8 @@ extension Channel: CustomDebugStringConvertible {
     }
 }
 
-extension Channel: CustomPlaygroundQuickLookable {
-    /// A custom playground quick look for this instance.
-    ///
-    /// If this type has value semantics, the `PlaygroundQuickLook` instance
-    /// should be unaffected by subsequent mutations.
-    public var customPlaygroundQuickLook: PlaygroundQuickLook {
-              return PlaygroundQuickLook.text(self.name)
+extension Channel: CustomPlaygroundDisplayConvertible {
+    public var playgroundDescription: Any {
+        return self.name
     }
 }

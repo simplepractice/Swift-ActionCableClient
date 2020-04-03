@@ -24,13 +24,12 @@ import Foundation
 import Accelerate
 
 internal let ActionCableSerialQueue = DispatchQueue(label: "com.ActionCableClient.SerialQueue", attributes: []);
-internal let ActionCableConcurrentQueue = DispatchQueue(label: "com.ActionCableClient.Conccurent", attributes: DispatchQueue.Attributes.concurrent)
 
 internal enum Command {
     case subscribe
     case unsubscribe
     case message
-    
+
     var string : String {
         switch self {
         case .subscribe: return "subscribe"
@@ -49,7 +48,7 @@ internal enum MessageType {
     case message
     case welcome
     case unrecognized
-    
+
     var string: String {
         switch self {
             case .confirmSubscription: return "confirm_subscription"
@@ -62,7 +61,7 @@ internal enum MessageType {
             case .unrecognized: return "___unrecognized"
         }
     }
-    
+
     init(string: String) {
         switch(string) {
             case MessageType.welcome.string:
@@ -84,14 +83,14 @@ internal enum MessageType {
 }
 
 internal struct Message {
-    var channelName : String?
+    var channelIdentifier : String?
     var actionName : String?
     var messageType : MessageType
     var data : Any?
     var error: Swift.Error?
-  
+
     static func simple(_ channel: Channel, messageType: MessageType) -> Message {
-        return Message(channelName: channel.name,
+        return Message(channelIdentifier: channel.identifier,
                         actionName: nil,
                        messageType: messageType,
                               data: nil,
@@ -107,7 +106,7 @@ internal struct Action {
 func exp2(_ x: [Double]) -> [Double] {
   var results = [Double](repeating: 0.0, count: x.count)
   vvexp2(&results, x, [Int32(x.count)])
-  
+
   return results
 }
 
@@ -115,3 +114,4 @@ func exp2(_ x: [Double]) -> [Double] {
 func clamp<T: Comparable>(_ value: T, lower: T, upper: T) -> T {
     return min(max(value, lower), upper)
 }
+

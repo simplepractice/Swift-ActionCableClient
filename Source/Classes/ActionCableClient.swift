@@ -420,6 +420,8 @@ extension ActionCableClient {
 
     fileprivate func onMessage(_ message: Message) {
             switch(message.messageType) {
+            case .disconnect:
+              disconnect()
             case .unrecognized:
                 break
             case .welcome:

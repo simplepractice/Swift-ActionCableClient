@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7768EAA8248673310044CB1E /* JSONSerializerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7768EAA7248673310044CB1E /* JSONSerializerTest.swift */; };
+		7768EAAA248673310044CB1E /* ActionCableClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86D4510D1DC31840006A516E /* ActionCableClient.framework */; };
 		86D451491DC31954006A516E /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86D451431DC31942006A516E /* Starscream.framework */; };
 		86D4514B1DC31959006A516E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86D4514A1DC31959006A516E /* Foundation.framework */; };
 		86E78CE21DC3220400FE3B71 /* ActionCableClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 86E78CDA1DC3220400FE3B71 /* ActionCableClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -18,7 +20,20 @@
 		86E78CE81DC3220400FE3B71 /* RetryHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E78CE01DC3220400FE3B71 /* RetryHandler.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		7768EAAB248673310044CB1E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 86D451041DC31840006A516E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 86D4510C1DC31840006A516E;
+			remoteInfo = "ActionCableClient iOS";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		7768EAA5248673310044CB1E /* ActionCableClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ActionCableClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7768EAA7248673310044CB1E /* JSONSerializerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONSerializerTest.swift; sourceTree = "<group>"; };
+		7768EAA9248673310044CB1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		86D4510D1DC31840006A516E /* ActionCableClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ActionCableClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		86D4511B1DC31874006A516E /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		86D451431DC31942006A516E /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = "../../../Library/Developer/Xcode/DerivedData/ActionCableClient-dqlkwbqjlfkoovgogjmwviglajzr/Build/Products/Debug-iphonesimulator/Starscream.framework"; sourceTree = "<group>"; };
@@ -41,6 +56,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7768EAA2248673310044CB1E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7768EAAA248673310044CB1E /* ActionCableClient.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		86D451091DC31840006A516E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -53,10 +76,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7768EAA6248673310044CB1E /* ActionCableClientTests */ = {
+			isa = PBXGroup;
+			children = (
+				7768EAA7248673310044CB1E /* JSONSerializerTest.swift */,
+				7768EAA9248673310044CB1E /* Info.plist */,
+			);
+			path = ActionCableClientTests;
+			sourceTree = "<group>";
+		};
 		86D451031DC31840006A516E = {
 			isa = PBXGroup;
 			children = (
 				86D4510F1DC31840006A516E /* Source */,
+				7768EAA6248673310044CB1E /* ActionCableClientTests */,
 				86D4510E1DC31840006A516E /* Products */,
 				86D451421DC31942006A516E /* Frameworks */,
 			);
@@ -66,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				86D4510D1DC31840006A516E /* ActionCableClient.framework */,
+				7768EAA5248673310044CB1E /* ActionCableClientTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -142,6 +176,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		7768EAA4248673310044CB1E /* ActionCableClientTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7768EAAF248673310044CB1E /* Build configuration list for PBXNativeTarget "ActionCableClientTests" */;
+			buildPhases = (
+				7768EAA1248673310044CB1E /* Sources */,
+				7768EAA2248673310044CB1E /* Frameworks */,
+				7768EAA3248673310044CB1E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7768EAAC248673310044CB1E /* PBXTargetDependency */,
+			);
+			name = ActionCableClientTests;
+			productName = ActionCableClientTests;
+			productReference = 7768EAA5248673310044CB1E /* ActionCableClientTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		86D4510C1DC31840006A516E /* ActionCableClient iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 86D451151DC31840006A516E /* Build configuration list for PBXNativeTarget "ActionCableClient iOS" */;
@@ -166,10 +218,15 @@
 		86D451041DC31840006A516E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0800;
+				LastSwiftUpdateCheck = 1150;
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Daniel Rhodes";
 				TargetAttributes = {
+					7768EAA4248673310044CB1E = {
+						CreatedOnToolsVersion = 11.5;
+						DevelopmentTeam = L6C56A69R7;
+						ProvisioningStyle = Automatic;
+					};
 					86D4510C1DC31840006A516E = {
 						CreatedOnToolsVersion = 8.0;
 						LastSwiftMigration = 0920;
@@ -191,11 +248,19 @@
 			projectRoot = "";
 			targets = (
 				86D4510C1DC31840006A516E /* ActionCableClient iOS */,
+				7768EAA4248673310044CB1E /* ActionCableClientTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		7768EAA3248673310044CB1E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		86D4510B1DC31840006A516E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -206,6 +271,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7768EAA1248673310044CB1E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7768EAA8248673310044CB1E /* JSONSerializerTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		86D451081DC31840006A516E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -221,7 +294,76 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		7768EAAC248673310044CB1E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 86D4510C1DC31840006A516E /* ActionCableClient iOS */;
+			targetProxy = 7768EAAB248673310044CB1E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		7768EAAD248673310044CB1E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = L6C56A69R7;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = ActionCableClientTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.simplepractice.ActionCableClientTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7768EAAE248673310044CB1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = L6C56A69R7;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = ActionCableClientTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.simplepractice.ActionCableClientTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		86D451131DC31840006A516E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -369,6 +511,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7768EAAF248673310044CB1E /* Build configuration list for PBXNativeTarget "ActionCableClientTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7768EAAD248673310044CB1E /* Debug */,
+				7768EAAE248673310044CB1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		86D451071DC31840006A516E /* Build configuration list for PBXProject "ActionCableClient" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

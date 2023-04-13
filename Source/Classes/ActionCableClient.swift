@@ -431,7 +431,7 @@ extension ActionCableClient {
                     DispatchQueue.main.async(execute: callback)
                 }
             case .message:
-                if let channel = channels[message.channelIdentifier!] {
+                if let channel = channels[message.channelIdentifier!] ?? unconfirmedChannels[message.channelIdentifier!] {
                     // Notify Channel
                     channel.onMessage(message)
 

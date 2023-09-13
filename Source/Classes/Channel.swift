@@ -100,7 +100,7 @@ open class Channel: Hashable, Equatable {
         identifierDict["channel"] = name
 
         // If something is wrong with the parameters, the developer will be warn with a runtime exception.
-        let JSONData = try! JSONSerialization.data(withJSONObject: identifierDict, options: JSONSerialization.WritingOptions(rawValue: 0))
+        let JSONData = try! JSONSerialization.data(withJSONObject: identifierDict, options: [.sortedKeys])
         return NSString(data: JSONData, encoding: String.Encoding.utf8.rawValue)! as String
     }
 

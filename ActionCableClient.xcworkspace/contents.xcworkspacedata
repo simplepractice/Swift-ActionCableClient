@@ -4,7 +4,4 @@
    <FileRef
       location = "group:ActionCableClient.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Carthage/Checkouts/Starscream/Starscream.xcodeproj">
-   </FileRef>
 </Workspace>

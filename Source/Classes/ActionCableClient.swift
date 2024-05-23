@@ -26,6 +26,9 @@ import Starscream
 public typealias ActionPayload = Dictionary<String, Any>
 
 open class ActionCableClient {
+    public enum SocketError: Error {
+        case disconnect(reason: String, code: URLSessionWebSocketTask.CloseCode)
+    }
 
     //MARK: Socket
     fileprivate(set) var socket : WebSocket
@@ -69,8 +72,8 @@ open class ActionCableClient {
     open var onChannelReceive: ((Channel, Any?, Swift.Error?) -> Void)?
 
     //MARK: Properties
-    open var isConnected : Bool { return socket.isConnected }
-    open var url: Foundation.URL { return socket.currentURL }
+    public private(set) var isConnected = false
+  open var url: Foundation.URL? { return socket.request.url }
 
     open var headers : [String: String]? {
         get { return socket.request.allHTTPHeaderFields }
@@ -92,8 +95,8 @@ open class ActionCableClient {
     ///  ```
     public required init(url: URL) {
         /// Setup Initialize Socket
-        socket = WebSocket(url: url)
-        setupWebSocket()
+        socket = WebSocket(request: URLRequest(url: url))
+        socket.delegate = self
     }
 
     public required init(url: URL, headers: [String: String]? = nil, origin : String? = nil) {
@@ -109,7 +112,7 @@ open class ActionCableClient {
         }
 
         socket = WebSocket(request: request)
-        setupWebSocket()
+        socket.delegate = self
     }
 
     /// Connect with the server
@@ -132,7 +135,7 @@ open class ActionCableClient {
     /// Disconnect from the server.
     open func disconnect() {
         manualDisconnectFlag = true
-        socket.disconnect(forceTimeout: 0)
+        socket.forceDisconnect()
     }
 
     internal func reconnect() {
@@ -316,14 +319,41 @@ extension ActionCableClient {
 }
 
 // MARK: WebSocket Callbacks
-extension ActionCableClient {
-
-    fileprivate func setupWebSocket() {
-        self.socket.onConnect    = { [weak self] in self!.didConnect() }
-        self.socket.onDisconnect = { [weak self] (error: Swift.Error?) in self!.didDisconnect(error) }
-        self.socket.onText       = { [weak self] (text: String) in self!.onText(text) }
-        self.socket.onData       = { [weak self] (data: Data) in self!.onData(data) }
-        self.socket.onPong       = { [weak self] (data: Data?) in self!.didPong() }
+extension ActionCableClient: WebSocketDelegate {
+    public func didReceive(event: WebSocketEvent, client: WebSocketClient) {
+        switch event {
+        case .connected(let headers):
+            isConnected = true
+            self.didConnect()
+        case .disconnected(let reason, let code):
+            isConnected = false
+            let code = URLSessionWebSocketTask.CloseCode(rawValue: Int(code))
+            switch code {
+            case .normalClosure:
+                self.didDisconnect(nil)
+            default:
+                self.didDisconnect(SocketError.disconnect(reason: reason, code: code ?? .abnormalClosure))
+            }
+        case .text(let string):
+            self.onText(string)
+        case .binary(let data):
+            self.onData(data)
+        case .ping(_):
+            break
+        case .pong(let data):
+            self.didPong()
+        case .viabilityChanged(_):
+            break
+        case .reconnectSuggested(_):
+            break
+        case .cancelled:
+            isConnected = false
+        case .error(let error):
+            isConnected = false
+            disconnect()
+        case .peerClosed:
+            disconnect()
+        }
     }
 
     fileprivate func didConnect() {
@@ -489,13 +519,13 @@ extension ActionCableClient {
 
 extension ActionCableClient : CustomDebugStringConvertible {
     public var debugDescription : String {
-            return "ActionCableClient(url: \"\(socket.currentURL)\" connected: \(socket.isConnected) id: \(Unmanaged.passUnretained(self).toOpaque()))"
+        return "ActionCableClient(url: \"\(playgroundDescription)\" connected: \(isConnected) id: \(Unmanaged.passUnretained(self).toOpaque()))"
     }
 }
 
 extension ActionCableClient : CustomPlaygroundDisplayConvertible {
     public var playgroundDescription: Any {
-        return socket.currentURL
+        return String(describing: socket.request.url)
     }
 }
 

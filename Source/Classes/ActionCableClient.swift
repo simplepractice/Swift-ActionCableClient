@@ -348,6 +348,7 @@ extension ActionCableClient: WebSocketDelegate {
             break
         case .cancelled:
             isConnected = false
+            self.didDisconnect(ConnectionError.closed(SocketError.disconnect(reason: "Cancelled", code: .normalClosure)))
         case .error(let error):
             isConnected = false
             disconnect()
